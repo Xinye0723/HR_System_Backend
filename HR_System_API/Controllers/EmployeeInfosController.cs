@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HR_System_API.Models;
-
+using Microsoft.AspNetCore.Authorization;
 namespace HR_System_API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeInfosController : ControllerBase
@@ -99,6 +100,7 @@ namespace HR_System_API.Controllers
 
         // DELETE: api/EmployeeInfos/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteEmployeeInfo(string id)
         {
             var employeeInfo = await _context.EmployeeInfos.FindAsync(id);

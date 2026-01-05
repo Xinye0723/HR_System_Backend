@@ -36,10 +36,16 @@ namespace HR_System_API.Controllers
             // ▼▼▼ 設定 Cookie 選項 ▼▼▼
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,  // 關鍵：讓前端 JS 讀不到，防 XSS
-                Secure = true,    // 建議開啟 (需要 HTTPS)，本地開發如果是 http 可能要暫時設 false
-                SameSite = SameSiteMode.Strict, // 防 CSRF
-                Expires = DateTime.UtcNow.AddHours(2) // 跟 Token 一樣的過期時間
+                HttpOnly = true,
+                // [修正] 改為 true。當 SameSite=None 時，必須開啟 Secure，否則瀏覽器會拒收。
+                // (您的 Program.cs 有 app.UseHttpsRedirection()，代表後端是跑 HTTPS 的，所以沒問題)
+                Secure = true,
+
+                // [修正] 改為 SameSiteMode.None。
+                // 這允許 Cookie 在不同 Port 之間傳送 (解決 Angular 4200 對接 API 的問題)。
+                SameSite = SameSiteMode.None,
+
+                Expires = DateTime.UtcNow.AddHours(2)
             };
 
             // 把 Token 寫入 Cookie
